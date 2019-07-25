@@ -3,6 +3,11 @@ body {
     font-size: 1.5em;
 }
 
+a {
+    text-decoration: none;
+    color: white;
+}
+
 #jumbotron {
     background-image: linear-gradient( #0059ff, #22a372);
     color: white;
