@@ -6,16 +6,79 @@
         <link rel="stylesheet" href="salt.css">
     </head>
     <body>
-        <div id="fb-root"></div>
-        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0&appId=923823324901118&autoLogAppEvents=1" nonce="mXqHw4EI"></script>
         <div id=jumbotron>
             <h1 id="sitename">SALT</h1>
         </div>
         <div id="about-us">
-            <div class="fb-login-button" data-width="" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false"></div>
+            <!-- The JS SDK Login Button -->
+            <fb:login-button id="login-button" hidden="false" scope="public_profile,email" onlogin="checkLoginState();">
+            </fb:login-button>
+            
+            <div id="status">
+            </div>
+
+            <button id="logout-button" onclick="logout()" hidden="true">Logout</button>
         </div>
         <footer>
             <a href="mailto:kyle@saltandlight.technology">Email Me</a>
         </footer>
+        <script>
+            function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
+              console.log('statusChangeCallback');
+              console.log(response);                   // The current login status of the person.
+              if (response.status === 'connected') {   // Logged into your webpage and Facebook.
+                testAPI();  
+              } else {                                 // Not logged into your webpage or we are unable to tell.
+                document.getElementById('status').innerHTML = 'Please log ' +
+                  'into this webpage.';
+              }
+            }
+          
+          
+            function checkLoginState() {               // Called when a person is finished with the Login Button.
+              FB.getLoginStatus(function(response) {   // See the onlogin handler
+                statusChangeCallback(response);
+              });
+            }
+          
+            window.fbAsyncInit = function() {
+              FB.init({
+                appId      : '923823324901118',
+                cookie     : true,                     // Enable cookies to allow the server to access the session.
+                xfbml      : true,                     // Parse social plugins on this webpage.
+                version    : 'v12.0'           // Use this Graph API version for this call.
+              });
+          
+          
+              FB.getLoginStatus(function(response) {   // Called after the JS SDK has been initialized.
+                statusChangeCallback(response);        // Returns the login status.
+              });
+            };
+           
+            function testAPI() {                      // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+              console.log('Welcome!  Fetching your information.... ');
+              FB.api('/me', function(response) {
+                console.log('Successful login for: ' + response.name);
+                document.getElementById('status').innerHTML =
+                  'Thanks for logging in, ' + response.name + '!';
+                document.getElementById('logout-button').style.display = 'block';
+                document.getElementById('login-button').style.display = 'none';
+              });
+            }
+
+            function logout() {
+                FB.logout(function(response) {
+                    // Person is now logged out
+                    console.log(response);
+                    document.getElementById('status').innerHTML = 'You\'ve been successfully logged out!';
+                    document.getElementById('logout-button').style.display = 'none';
+                    document.getElementById('login-button').style.display = 'block';
+                });
+            }
+          </script>
+          
+          <!-- Load the JS SDK asynchronously -->
+          <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+          
     </body>
 </html>
